@@ -1,0 +1,236 @@
+ Case Study 1 : Employee Management System
+
+#  Scenario:
+You have been hired as a database administrator for a new company, and you need to create an Employee Management System to keep track of the employees, their departments, projects they are working on, and their attendance.
+
+  Task List:
+
+1.   Create the Database:  
+   - Name the database `EmployeeManagement`.
+
+2.   Create Tables:  
+   -   Departments Table:  
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+   -   Employees Table:  
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+     - `age`: INT, Not Null
+     - `gender`: VARCHAR(10), Not Null
+     - `salary`: INT, Not Null, Check Salary > 30000
+     - `department_id`: INT, Foreign Key References `Departments(id)`
+   -   Projects Table:  
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+     - `budget`: INT, Not Null, Check Budget > 10000
+   -   Employee_Projects Table:  
+     - `employee_id`: INT, Foreign Key References `Employees(id)`
+     - `project_id`: INT, Foreign Key References `Projects(id)`
+     - Primary Key (`employee_id`, `project_id`)
+   -   Attendance Table:  
+     - `id`: INT, Primary Key, Auto Increment
+     - `employee_id`: INT, Foreign Key References `Employees(id)`
+     - `date`: DATE, Not Null
+     - `status`: ENUM('Present', 'Absent', 'On Leave')
+
+
+3.   Insert Sample Data:  
+   - Insert data into `Departments`, `Employees`, `Projects`, `Employee_Projects`, and `Attendance` tables.
+
+
+create table departments(
+id int primary key auto_increment,
+name varchar(50) not null);
+
+
+
+
+create table employees(id int primary key auto_increment,
+name varchar(50) not null,
+age int not null,
+gender varchar(10) not null,
+salary int not null constraint con_sal check(salary>30000),
+department_id int ,foreign key(department_id) references departments(id)
+); 
+
+
+create table projects(id int primary key auto_increment,
+name varchar(50) not null,
+budget int not null,check(budget>10000)
+);
+
+
+create table employee_projects(
+employee_id int ,foreign key(employee_id) references employees(id),
+project_id int, foreign key(project_id) references  projects(id)
+);
+
+
+
+create table attendance(id int primary key auto_increment,
+employee_id int ,foreign key(employee_id) references employees(id),
+date date not null,
+status enum('present','absent','on leave')
+); 
+
+
+
+select * from departments;
+
+select * from employees;
+
+select * from projects;
+
+select * from employee_projects;
+
+select * from attendance;
+
+set sql_safe_updates=0;
+
+select * from departments;
+insert into departments values(1,'admin'),(2,'finance'),(3,'IT'),(4,'HR'),(5,'sales'),(6,'analyst');
+
+insert into employees values(1001,'anu',20,'f',35000,1);
+
+insert into employees(name,age,gender,salary,department_id) values('ron',28,'m',40000,2),
+('harry',34,'m',37000,3),('ash',26,'m',47000,3),('john',38,'f',60000,3),('lisa',24,'f',39000,3),
+('may',55,'f',63000,4),('chan',39,'m',40000,4),('mike',53,'m',58000,4),
+('potter',26,'m',45000,4),('jane',36,'f',60000,5),('kate',27,'f',98000,5),
+('welly',45,'m',55000,6);
+
+insert into projects(name,budget) values('project a',70000),('project b','30000'),('project c',40000),('project d',34000),
+('project e',23000),('project f',64000),('project g',76500);
+
+
+insert into employee_projects values(1,1),(2,1),(3,2),(4,2),(5,3),(6,3),(7,4),(8,4),(9,5),(10,5),(11,6),(12,7);
+
+
+insert into attendance values(101,1,'2024-04-03',2),(102,2,'2024-04-04',3),(103,3,'2024-05-06',1),
+(104,4,'2024-04-06',2),(105,5,'2024-04-07',3),(106,6,'2024-04,09',1),(107,7,'2024-05-10',3),(108,8,'2024-06-14',2),(109,9,'2024-06-16',1),(110,10,'2024-06-24',3),
+(111,11,'2024-07-08',1),(112,12,'2024-07-20',2);
+
+4.   Queries:  
+   Retrieve all employees.
+
+select id, name from employees;
+
+
+ - Retrieve all employees in the 'IT' department.
+
+select employees.name,departments.name from employees join departments on employees.department_id=departments.id where employees.department_id=3;
+
+
+
+- List all projects with a budget greater than 50000.
+
+select name,budget from projects where budget>50000;
+
+
+
+- Show the names of employees and the projects they are working on.
+
+ select employees.name ,projects.name from employees 
+ join employee_projects on employees.id=employee_projects.employee_id 
+ inner join projects on employee_projects.project_id=projects.id;
+
+
+
+
+
+ - Count the number of employees in each department.
+
+
+select count(employees.id) as no_of_empdep ,departments.name as department_name from departments join employees on departments.id=employees.department_id group by department_name;
+
+
+
+
+ Find employees with a salary greater than 50000.
+
+select name ,salary from employees where salary>50000;
+
+
+
+ - Get attendance records for a specific employee.
+
+
+select employees.name ,attendance.status from employees join attendance on employees.id=attendance.employee_id where employees.id=3;
+
+
+
+5.   Update Records:  
+   - Increase the salary of employees in the 'HR' department by 10%.
+
+update employees SET salary = salary * 1.10 where employees.department_id=4; 
+
+
+select employees.name as emp_name,departments.name as dept_name,employees.salary from employees
+ join departments on employees.department_id=departments.id where employees.department_id=4  ;
+
+
+   - Change the department of an employee.
+
+update employees set employees.department_id=1 where employees.id=2;
+
+select * from employees;
+
+
+
+6.   Delete Records:  
+   - Remove an employee who has resigned.
+delete from employees where employees.id=11;
+
+delete from employee_projects where employee_id=11;
+
+delete from attendance where employee_id=11;
+
+
+
+
+
+   - Delete a project that is completed.
+
+delete from projects where id=7;
+
+delete from employee_projects where project_id=7;
+
+
+7.   Constraints and Modifications:  
+
+   - Add a unique constraint to the `email` column in `Employees` table.
+
+
+update employees set email='empharry2@gmail.com' where name='harry';
+update employees set email='empron3@gmail.com' where name='ash';
+update employees set email='empjohn4@gmail.com'where name='john';
+update employees set email='emplisa5@gmail.com' where name='lisa';
+update employees set email='empmay6@gmail.com' where name='may';
+update employees set email='empchan7@gmail.com' where name='chan';
+update employees set email='empmike8@gmail.com' where name='mike';
+update employees set email='emppotter9@gmail.com' where name='potter';
+update employees set email='empjane10@gmail.com' where name='jane';
+update employees set email='empwelly11@gmail.com' where name='welly';
+
+SELECT * FROM employees;
+
+
+
+   - Ensure `age` is always greater than 18.
+
+
+SELECT * FROM employees;
+alter table employees
+add constraint chk_age check (age>18);
+
+update employees set age=14 where id=4;
+Error Code: 3819. Check constraint 'chk_age' is violated.
+
+   - Add a default value 'Unknown' to `gender` if not specified
+
+alter table employees modify gender varchar(10) default 'UNKNOWN';
+
+insert into employees(id,name,age,salary,department_id,email) values(13,'max',36,60000,5,'empmax13@gmail.com');
+
+
+
+
