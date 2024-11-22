@@ -1,0 +1,132 @@
+    Case Study 6: Online Learning Platform
+
+      Scenario:      
+Design a database for an online learning platform to manage courses, instructors, and student enrollments.
+
+      Tasks:      
+1.       Create the Database:      
+   - Name the database `LearningDB`.
+
+2.       Create Tables:      
+   -       Courses Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `title`: VARCHAR(100), Not Null
+     - `description`: TEXT
+   -       Instructors Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+     - `expertise`: VARCHAR(50), Not Null
+   -       Students Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+     - `email`: VARCHAR(50), Not Null, Unique
+   -       Enrollments Table:      
+     - `student_id`: INT, Foreign Key References `Students(id)`
+     - `course_id`: INT, Foreign Key References `Courses(id)`
+     - `enrollment_date`: DATE, Not Null
+     - Primary Key (`student_id`, `course_id`)
+
+create table courses ( 
+id int primary key auto_increment,
+title varchar(100) not null,
+description text);
+
+create table instructors( 
+id int primary key auto_increment,
+name varchar(50) not null,
+expertise varchar(50) not null);
+
+
+create table students( 
+id int primary key auto_increment,
+name varchar(50) not null,
+email varchar(50) not null unique);
+
+
+create table enrollments(
+students_id int ,foreign key (students_id) references students(id),
+courses_id int, foreign key(courses_id) references courses(id),
+enrollment_date date not null,
+primary key (students_id,courses_id));
+
+
+
+3.       Insert Sample Data.      
+SELECT * FROM learningdb.courses;
+
+insert into courses values
+(1,'python','Python descriptors are created to manage the attributes of different classes which use the object as reference.'),
+(2,'java','Java programming tutorial is designed for students and working professionals.'),
+(3,'sql','SQL is a standard language for storing, manipulating and retrieving data in databases.');
+
+
+
+SELECT * FROM learningdb.enrollments;
+
+insert into enrollments values
+(10,3,'2024-11-24'),
+(11,3,'2024-11-24'),
+(12,3,'2024-11-24'),
+(13,2,'2024-12-03'),
+(14,2,'2024-12-03'),
+(15,2,'2024-12-03'),
+(16,1,'2024-10-11'),
+(17,1,'2024-10-11');
+
+
+
+
+
+SELECT * FROM learningdb.instructors;
+
+insert into instructors values(101,'zack','java'),
+(102,'lee','sql'),
+(103,'jessi','python');
+
+
+
+
+
+SELECT * FROM learningdb.students;
+
+insert into students values(10,'john','john@gmail.com'),
+(11,'lisa','lisa@gmail.com'),
+(12,'ash','ash@gmail.com'),
+(13,'jade','jade@gmail.com'),
+(14,'lily','lily@gmail.com'),
+(15,'lucy','lucy@gmail.com'),
+(16,'mike','mike@gmail.com'),
+(17,'marry','marry@gmail.com');
+
+
+
+
+
+
+
+4.       Queries:      
+   - List all courses.
+
+select title from courses;
+
+   - List all instructors.
+
+select name from instructors;
+
+
+
+   - Show enrollments with student names and course titles.
+
+select students.name,courses.title from students join enrollments on
+ students.id=enrollments.students_id inner join courses on courses.id=enrollments.courses_id;
+
+
+
+
+   - Count the number of students enrolled in each course.
+
+select courses.title,count(enrollments.students_id) from courses join enrollments on
+ courses.id= enrollments.courses_id group by courses_id;
+
+
+
