@@ -1,0 +1,118 @@
+    Case Study 3: Student Management System
+
+      Scenario:      
+Create a database to manage students, their courses, and grades.
+
+      Tasks:      
+1.       Create the Database:      
+   - Name the database `StudentDB`.
+
+2.       Create Tables:      
+   -       Students Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+     - `age`: INT, Not Null
+     - `email`: VARCHAR(50), Not Null, Unique
+   -       Courses Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+   -       Enrollments Table:      
+     - `student_id`: INT, Foreign Key References `Students(id)`
+     - `course_id`: INT, Foreign Key References `Courses(id)`
+     - `grade`: CHAR(1)
+     - Primary Key (`student_id`, `course_id`)
+
+
+create table student(
+id int primary key auto_increment,
+name varchar(50) not null,
+age int not null,
+email varchar(50) not null unique);
+
+create table courses (
+ id int primary key auto_increment,
+name varchar(50) not null);
+
+create table enrollments(
+student_id int ,foreign key(student_id) references student(id),
+course_id int ,foreign key (course_id) references courses(id),
+grade char(1),
+primary key (student_id,course_id));
+
+
+
+
+
+
+
+
+3.       Insert Sample Data.      
+SELECT * FROM studentdb.courses;
+
+insert into courses values(3,'cloud computing'),(4,'python'),
+(5,'java');
+
+
+
+SELECT * FROM studentdb.enrollments;
+
+insert into enrollments values
+(101,3,'A'),(102,3,'A'),(105,3,'B'),
+(104,5,'B'),(103,5,'A'),(106,4,'D');
+
+
+
+SELECT * FROM studentdb.student;
+
+insert into student values(101,'anu',20,'anu23@gmail.com'),
+(102,'zack',23,'zack4@gmail.com'),
+(103,'may',19,'may42@gmail.com'),
+(104,'jade',23,'jade@gamail.com'),
+(105,'james',24,'james@gmail.com'),
+(106,'lisa',25,'lisa@gmail.com');
+
+
+
+
+
+
+4.       Queries:      
+   - List all students.
+
+
+SELECT * FROM studentdb.student;
+
+select name from student;
+
+
+
+   - List all courses.
+
+
+
+ SELECT * FROM studentdb.courses;
+
+select name from courses;
+
+   - Show the names of students and the courses they are enrolled in.
+
+SELECT * FROM studentdb.enrollments;
+
+select student.name,
+courses.name from student join enrollments on student.id=enrollments.student_id
+ inner join courses on courses.id=enrollments.course_id ;
+
+
+
+  - Count the number of students in each course.
+
+select courses.name,count(enrollments.student_id) from courses join enrollments 
+on courses.id=enrollments.course_id group by course_id;
+
+
+
+
+
+
+
+
