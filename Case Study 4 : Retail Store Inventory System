@@ -1,0 +1,117 @@
+
+    
+ Case Study 4 : Retail Store Inventory System
+
+      Scenario:      
+Design a database to manage a retail store's inventory, suppliers, and sales.
+
+      Tasks:      
+1.       Create the Database:      
+   - Name the database `RetailDB`.
+
+2.       Create Tables:      
+   -       Products Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+     - `price`: DECIMAL(10, 2), Not Null, Check Price > 0
+     - `stock`: INT, Not Null, Check Stock >= 0
+   -       Suppliers Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `name`: VARCHAR(50), Not Null
+     - `contact`: VARCHAR(50)
+   -       Sales Table:      
+     - `id`: INT, Primary Key, Auto Increment
+     - `product_id`: INT, Foreign Key References `Products(id)`
+     - `date`: DATE, Not Null
+     - `quantity`: INT, Not Null, Check Quantity > 0
+     - `total_price`: DECIMAL(10, 2), Not Null
+
+
+create table products(
+id int primary key auto_increment,
+name varchar(50) not null,
+price decimal(10,2) not null ,
+stock int not null,
+check( price>0),
+check (stock>=0));
+
+create table suppliers (
+id int primary key auto_increment,
+name varchar(50) not null,
+contact varchar(50));
+
+create table sales (
+id int primary key auto_increment,
+product_id int , foreign key(product_id) references products(id),
+date date not null,
+quantity int not null,
+total_price decimal(10,2) not null,
+check(quantity>0));
+
+
+
+3.       Insert Sample Data.      
+
+SELECT * FROM retaildb.products;
+
+insert into products values
+(1,'pen',10,40),
+(2,'paint',40,5),
+(3,'notebook',50,9),
+(4,'charts',10,7),
+(5,'paper',2,50),
+(6,'purse',100,6);
+
+
+
+SELECT * FROM retaildb.sales;
+
+insert into sales values
+(1,2,'2024-07-05',2,80),
+(2,3,'2024-10-23',3,150),
+(3,4,'2024-02-03',4,40),
+(4,5,'2024-05-16',10,20),
+(5,6,'2024-01-16',1,100),
+(6,1,'2024-03-27',3,120);
+
+
+
+SELECT * FROM retaildb.suppliers;
+
+insert into suppliers values
+(101,'john','9876578765'),
+(102,'harry','987576241'),
+(103,'marry','2158765328'),
+(104,'ash','3698754216'),
+(105,'jack','1547623598');
+
+
+
+
+
+
+
+4.       Queries:      
+   - List all products.
+select name from products;
+
+
+
+   - Show products with stock less than 10.
+select name ,stock from products where stock<10;
+
+
+   - List sales with product names and total prices.
+
+select products.name ,sales.total_price from products join sales on 
+products.id=sales.product_id ;
+
+
+
+   - Calculate the total sales for each product.
+
+select products.name, sum(sales.quantity) as total_sales from products join sales on
+ products.id=sales.product_id group by product_id;
+
+
+
